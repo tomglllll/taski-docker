@@ -1,13 +1,15 @@
+from decouple import config, Csv
 from pathlib import Path
+from django.core.management.utils import get_random_secret_key
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = 'django-insecure-j_89af+30&&4qm*8z9_(^zz8p4-ho8z_m6ylm0s$h!-p@on1_^'
+SECRET_KEY = config('SECRET_KEY', default=get_random_secret_key(), cast=str)
 
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=['*'], cast=Csv())
 
 
 # Application definition
@@ -61,8 +63,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/data/db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('POSTGRES_DB', default='django', cast=str),
+        'USER': config('POSTGRES_USER', default='django', cast=str),
+        'PASSWORD': config('POSTGRES_PASSWORD', default='', cast=str),
+        'HOST': config('DB_HOST', default='', cast=str),
+        'PORT': config('DB_PORT', default=5432, cast=int)
     }
 }
 
@@ -104,6 +110,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'collected_static'
+# if DEBUG:
+#    STATICFILES_DIRS = [BASE_DIR / 'collected_static']
+# else:
+#    STATIC_ROOT = BASE_DIR / 'collected_static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
