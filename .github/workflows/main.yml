@@ -120,7 +120,7 @@ jobs:
         with:
           context: ./gateway/
           push: true
-          tags: username/taski_gateway:latest
+          tags: tomgll/taski_gateway:latest
 
   deploy:
     runs-on: ubuntu-latest
